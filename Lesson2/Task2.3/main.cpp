@@ -64,19 +64,25 @@ void swapWithUniqueLock(Data& d1, Data& d2)
 {
     std::unique_lock<std::mutex> lock1(d1.mutex_, std::defer_lock);
     std::unique_lock<std::mutex> lock2(d2.mutex_, std::defer_lock);
-    lock1.lock();
-    lock2.lock();
+    //lock1.lock();
+   // lock2.lock();
+
     //swap
     int tmp = d1.getValue();
     d1.setValue(d2.getValue());
     d2.setValue(tmp);
 
+    std::lock (d1.mutex_, d2.mutex_);
+
     std::cout << std::endl << "ThreadId: " << std::this_thread::get_id() << ". После обмена: " __FUNCTION__ << std::endl;
     std::cout << "value_ = " << d1.getValue() << ";" << std::endl;
     std::cout << "value_ = " << d2.getValue() << ";" << std::endl;
-    lock1.unlock();
-    lock2.unlock();
-}
+   
+    d1.mutex_.unlock();
+    d2.mutex_.unlock();
+    //lock1.unlock();
+   // lock2.unlock();
+   }
 
 int main()
 {
